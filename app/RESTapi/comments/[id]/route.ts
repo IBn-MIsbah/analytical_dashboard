@@ -20,9 +20,23 @@ export const PATCH = async (
 
   // const body = awa req.json()
   // const comment = body.comment
-  const { comment } = await req.json();
+  const { comment: newComment } = await req.json();
 
   const index = comments.findIndex((c) => c.id === parseInt(id));
-  comments[index].comment = comment;
+  comments[index].comment = newComment;
   return Response.json(comments[index]);
+};
+
+export const DELETE = async (
+  _req: Request,
+  {
+    params,
+  }: {
+    params: Promise<{ id: string }>;
+  }
+) => {
+  const { id } = await params;
+  const index = comments.findIndex((c) => c.id === parseInt(id));
+  const [deleted] = comments.splice(index, 1);
+  return Response.json(deleted);
 };
