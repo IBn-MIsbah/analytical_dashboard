@@ -1,4 +1,3 @@
-import { defaultMaxListeners } from "events";
 import Link from "next/link";
 
 const F1 = () => {
