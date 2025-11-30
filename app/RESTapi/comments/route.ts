@@ -21,11 +21,21 @@ export const POST = async (req: Request) => {
 export const GET = async (req: NextRequest) => {
   const searchParams = req.nextUrl.searchParams;
   const query = searchParams.get("query");
-  const filterComments = query
-    ? comments.filter((c) =>
-        c.comment.toLocaleLowerCase().includes(query.toLocaleLowerCase())
-      )
-    : comments;
+  const commentId = searchParams.get("id");
+  let filterComments = [...comments];
+  if (query) {
+    filterComments = query
+      ? comments.filter((c) =>
+          c.comment.toLocaleLowerCase().includes(query.toLocaleLowerCase())
+        )
+      : comments;
+  }
+
+  if (commentId) {
+    filterComments = commentId
+      ? comments.filter((c) => c.id === parseInt(commentId))
+      : comments;
+  }
 
   return Response.json({
     data: filterComments,
