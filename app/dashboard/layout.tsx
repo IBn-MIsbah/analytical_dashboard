@@ -1,24 +1,50 @@
-// dashboard/layout.tsx
-export default function DashboardLayout({
-  children,
-  user,
+import { SidebarProvider } from "@/components/ui/sidebar";
+import { Suspense } from "react";
+
+const DashboardLayout = ({
+  main,
+  navbar,
+  sidebar,
 }: {
-  children: React.ReactNode;
-  user?: React.ReactNode;
-}) {
+  navbar: React.ReactNode;
+  main: React.ReactNode;
+  sidebar: React.ReactNode;
+}) => {
   return (
-    <html>
-      <body>
-        <div className="min-h-screen bg-gray-100">
-          <nav className="bg-white shadow-sm p-4">
-            <h1 className="text-xl font-bold">Dashboard Layout</h1>
+    <SidebarProvider>
+      <div className="flex min-h-screen min-w-screen">
+        {/* Sidebar with Suspense for loading state */}
+        <Suspense
+          fallback={<div className="w-64 bg-gray-100">Loading sidebar...</div>}
+        >
+          {sidebar}
+        </Suspense>
+
+        <div className="flex-1 flex flex-col min-w-0">
+          {" "}
+          {/* min-w-0 prevents overflow */}
+          {/* Navbar */}
+          <nav className="bg-white border-b px-6 py-3">
+            <Suspense fallback={<div>Loading navbar...</div>}>
+              {navbar}
+            </Suspense>
           </nav>
-          <div className="container mx-auto p-4">
-            {children}
-            {user}
-          </div>
+          {/* Main content area */}
+          <main className="flex-1 p-6 bg-gray-50 overflow-auto">
+            <Suspense
+              fallback={
+                <div className="flex items-center justify-center h-64">
+                  <div className="text-gray-500">Loading analytics...</div>
+                </div>
+              }
+            >
+              {main}
+            </Suspense>
+          </main>
         </div>
-      </body>
-    </html>
+      </div>
+    </SidebarProvider>
   );
-}
+};
+
+export default DashboardLayout;
